@@ -199,7 +199,14 @@ Limpa o display e exibe três informações:
 3. A solução criada funcionou como esperado? Funcionou bem.
 4. O que poderia ser melhorado em uma próxima versão? Melhorar o design, se possível, melhorar a organização do fios.
 
+### Fotos do circuito digital/físico:
+<p align="center">
+  <img src="Captura de tela 2026-06-23 191440.png" width="75%">
+</p>
 
+<p align="center">
+  <img src="20260623_191804.jpg.jpeg" width="75%">
+</p>
 
 
 
