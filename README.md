@@ -8,7 +8,7 @@
 
 ### Primeira etapa: Criação da ideia
 **1 - Qual será a ideia principal do trabalho?**  
-Criar um console portátil do clássico jogo da cobrinha (Snake) utilizando Arduino e um display LCD Nokia 5110, reproduzindo a experiência dos antigos celulares e videogames portáteis, modificando-o para poder ser jogado em dupla.
+Criar um console portátil do clássico jogo da cobrinha (Snake) utilizando Arduino e um display OLED, reproduzindo a experiência dos antigos celulares e videogames portáteis, modificando-o para poder ser jogado em dupla.
  
 **2 - Como essa ideia surgiu?**  
 Surgiu de um projeto feito no instructables que faz possível jogar o jogo da cobrinha em arduino, então tivemos a ideia de aprimorar e fazer possível jogar em dupla o mesmo jogo.
@@ -20,7 +20,7 @@ Porque une programação, eletrônica, prática e criatividade em um projeto con
 A necessidade de aplicar nossos aprendizados de lógica de programação e controle do arduino em um projeto real, tangível e funcional, saindo do ambiente puramente teórico da sala de aula.
  
 **5 - O que a dupla pretende criar ao final?**  
-Um mini-console portátil físico, com Arduino Nano, display Nokia 5110 LCD, botões direcionais e alimentação por bateria, capaz de rodar o jogo da cobrinha de forma completa (movimentação, pontuação e detecção de colisão). 
+Um mini-console portátil físico, com Arduino Nano, display OLED, botões direcionais e alimentação por bateria, capaz de rodar o jogo da cobrinha de forma completa (movimentação, pontuação e detecção de colisão). 
 
 ### Segunda etapa: Definição do problema ou necessidade
 **1 - O que precisa ser resolvido, melhorado ou representado?**  
@@ -53,8 +53,8 @@ Um jogo completamente funcional no arduino físico, com resposta rápida aos bot
 
 ### Quarta etapa: decomposição
 **Partes da solução:**
-1 -
-2 - 
+1 - Descrição da ideia: Jogo da cobrinha de dois jogadores. Cada um controla sua cobrinha para comer o máximo de comida possível e marcar pontos.
+2 - Listar materiais para montar o hardware: 8 botões, protoboard, arduino UNO, display OLED, jumpers, resistores.
 3 - 
 4 - 
 5 - 
