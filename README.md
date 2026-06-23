@@ -182,8 +182,8 @@ Limpa o display e exibe três informações:
 - Instrução para pressionar um botão e reiniciar
 
 ### Oitava etapa: simulação e protótipo
-**O que será simulado:**  
-**O que a dupla conseguiu iniciar hoje:**  
+**O que será simulado:** Um jogo de Snake (Jogo da Cobrinha)  
+**O que a dupla conseguiu iniciar hoje:** No dia do início do projeto, formalizamos a ideia. Nos seguintes dias, montamos o projeto e código, resolvendo quaisquer bugs ou problemas que encontramos.
 
 ### Nona etapa: testes e melhorias
 1. A simulação funcionou como esperado? Funcionou, depois de várias correções.
