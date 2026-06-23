@@ -208,6 +208,349 @@ Limpa o display e exibe três informações:
   <img src="20260623_191804.jpg.jpeg" width="75%">
 </p>
 
+### Código:
+
+```bash
+// =====================================================
+//  JOGO DA COBRA - 2 JOGADORES
+//  Hardware: Arduino Uno/Nano + OLED SSD1306 128x64 (I2C) + 8 botões
+//  Bibliotecas necessárias: Adafruit SSD1306 + Adafruit GFX
+// =====================================================
+
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+// ---------- Configuração do OLED ----------
+#define SCREEN_WIDTH  128
+#define SCREEN_HEIGHT  64
+#define OLED_RESET     -1   // sem pino de reset (compartilha com Arduino)
+// Endereço I2C mais comum: 0x3C. Se não funcionar, tente 0x3D
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+// ---------- Pinos dos botões ----------
+#define P1_UP    2
+#define P1_DOWN  3
+#define P1_LEFT  4
+#define P1_RIGHT 5
+
+#define P2_UP    6
+#define P2_DOWN  7
+#define P2_LEFT  A0
+#define P2_RIGHT A1
+
+// ---------- Configurações do campo ----------
+// OLED 128x64: usamos 128x54 para jogo + 10px rodapé de placar
+#define CELL      4          // pixels por célula
+#define COLS     (128/CELL)  // 32 colunas
+#define ROWS     (54/CELL)   // 13 linhas
+#define MAX_LEN   60         // comprimento máximo de cada cobra
+
+#define FIELD_H  (ROWS * CELL)   // 52px — altura do campo
+#define SCORE_Y  (FIELD_H + 2)   // 54px — Y do placar
+
+// ---------- Estrutura de posição ----------
+struct Point { int8_t x, y; };
+
+// ---------- Cobras ----------
+Point snake1[MAX_LEN], snake2[MAX_LEN];
+int    len1, len2;
+int8_t dir1x, dir1y, ndir1x, ndir1y;
+int8_t dir2x, dir2y, ndir2x, ndir2y;
+
+// ---------- Comida ----------
+Point food;
+
+// ---------- Estado ----------
+int  score1, score2;
+bool alive1, alive2, gameOver;
+unsigned long lastMove;
+int  gameSpeed = 200;
+
+// ---------- Protótipos ----------
+void initGame();
+void spawnFood();
+void readButtons();
+void moveSnakes();
+void accelerate();
+void drawGame();
+void drawGameOver();
+void waitAnyButton();
+
+// =====================================================
+void setup() {
+  pinMode(P1_UP,    INPUT);
+  pinMode(P1_DOWN,  INPUT);
+  pinMode(P1_LEFT,  INPUT);
+  pinMode(P1_RIGHT, INPUT);
+  pinMode(P2_UP,    INPUT);
+  pinMode(P2_DOWN,  INPUT);
+  pinMode(P2_LEFT,  INPUT);
+  pinMode(P2_RIGHT, INPUT);
+
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    // Se falhar, trava piscando o LED interno
+    pinMode(LED_BUILTIN, OUTPUT);
+    while (true) { digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN)); delay(300); }
+  }
+
+  display.clearDisplay();
+  display.setTextColor(WHITE);  // OLED: fundo preto, texto/pixels brancos
+
+  // Tela de boas-vindas
+  display.setTextSize(2);
+  display.setCursor(16, 4);  display.print("COBRA 2P");
+  display.setTextSize(1);
+  display.setCursor(10, 26); display.print("J1: pinos 2 3 4 5");
+  display.setCursor(10, 36); display.print("J2: pinos 6 7 A0 A1");
+  display.setCursor(22, 50); display.print("Pressione botao");
+  display.display();
+
+  waitAnyButton();
+  delay(200);
+  initGame();
+}
+
+// =====================================================
+void loop() {
+  readButtons();
+
+  if (!gameOver && millis() - lastMove >= (unsigned long)gameSpeed) {
+    lastMove = millis();
+    moveSnakes();
+    drawGame();
+  }
+
+  if (gameOver) {
+    drawGameOver();
+    delay(3000);
+    waitAnyButton();
+    delay(200);
+    initGame();
+  }
+}
+
+// =====================================================
+void initGame() {
+  score1 = 0; score2 = 0;
+  alive1 = true; alive2 = true;
+  gameOver = false;
+  gameSpeed = 200;
+
+  // Cobra 1: esquerda, linha central superior, vai para direita
+  len1 = 3;
+  for (int i = 0; i < len1; i++) { snake1[i].x = 4 - i; snake1[i].y = ROWS / 3; }
+  dir1x = 1; dir1y = 0; ndir1x = 1; ndir1y = 0;
+
+  // Cobra 2: direita, linha central inferior, vai para esquerda
+  len2 = 3;
+  for (int i = 0; i < len2; i++) { snake2[i].x = COLS - 5 + i; snake2[i].y = (ROWS * 2) / 3; }
+  dir2x = -1; dir2y = 0; ndir2x = -1; ndir2y = 0;
+
+  spawnFood();
+  lastMove = millis();
+  drawGame();
+}
+
+// =====================================================
+void spawnFood() {
+  bool ok = false;
+  while (!ok) {
+    food.x = random(0, COLS);
+    food.y = random(0, ROWS);
+    ok = true;
+    for (int i = 0; i < len1 && ok; i++)
+      if (snake1[i].x == food.x && snake1[i].y == food.y) ok = false;
+    for (int i = 0; i < len2 && ok; i++)
+      if (snake2[i].x == food.x && snake2[i].y == food.y) ok = false;
+  }
+}
+
+// =====================================================
+void readButtons() {
+  if (digitalRead(P1_UP)    == HIGH && dir1y !=  1) { ndir1x =  0; ndir1y = -1; }
+  if (digitalRead(P1_DOWN)  == HIGH && dir1y != -1) { ndir1x =  0; ndir1y =  1; }
+  if (digitalRead(P1_LEFT)  == HIGH && dir1x !=  1) { ndir1x = -1; ndir1y =  0; }
+  if (digitalRead(P1_RIGHT) == HIGH && dir1x != -1) { ndir1x =  1; ndir1y =  0; }
+
+  if (digitalRead(P2_UP)    == HIGH && dir2y !=  1) { ndir2x =  0; ndir2y = -1; }
+  if (digitalRead(P2_DOWN)  == HIGH && dir2y != -1) { ndir2x =  0; ndir2y =  1; }
+  if (digitalRead(P2_LEFT)  == HIGH && dir2x !=  1) { ndir2x = -1; ndir2y =  0; }
+  if (digitalRead(P2_RIGHT) == HIGH && dir2x != -1) { ndir2x =  1; ndir2y =  0; }
+}
+
+// =====================================================
+void moveSnakes() {
+  dir1x = ndir1x; dir1y = ndir1y;
+  dir2x = ndir2x; dir2y = ndir2y;
+
+  Point head1 = { (int8_t)(snake1[0].x + dir1x), (int8_t)(snake1[0].y + dir1y) };
+  Point head2 = { (int8_t)(snake2[0].x + dir2x), (int8_t)(snake2[0].y + dir2y) };
+
+  // Colisões J1
+  if (alive1) {
+    bool hit = false;
+    if (head1.x < 0 || head1.x >= COLS || head1.y < 0 || head1.y >= ROWS) hit = true;
+    for (int i = 0; i < len1 - 1 && !hit; i++)
+      if (snake1[i].x == head1.x && snake1[i].y == head1.y) hit = true;
+    for (int i = 0; i < len2 && !hit; i++)
+      if (snake2[i].x == head1.x && snake2[i].y == head1.y) hit = true;
+    if (hit) { alive1 = false; score2 += 3; }
+  }
+
+  // Colisões J2
+  if (alive2) {
+    bool hit = false;
+    if (head2.x < 0 || head2.x >= COLS || head2.y < 0 || head2.y >= ROWS) hit = true;
+    for (int i = 0; i < len2 - 1 && !hit; i++)
+      if (snake2[i].x == head2.x && snake2[i].y == head2.y) hit = true;
+    for (int i = 0; i < len1 && !hit; i++)
+      if (snake1[i].x == head2.x && snake1[i].y == head2.y) hit = true;
+    if (hit) { alive2 = false; score1 += 3; }
+  }
+
+  // Colisão cabeça-a-cabeça
+  if (alive1 && alive2 && head1.x == head2.x && head1.y == head2.y) {
+    alive1 = false; alive2 = false;
+  }
+
+  // Mover J1
+  if (alive1) {
+    bool ate = (head1.x == food.x && head1.y == food.y);
+    int newLen = ate ? min(len1 + 1, MAX_LEN) : len1;
+    for (int i = newLen - 1; i > 0; i--) snake1[i] = snake1[i-1];
+    snake1[0] = head1;
+    if (ate) { len1 = newLen; score1++; spawnFood(); accelerate(); }
+  }
+
+  // Mover J2
+  if (alive2) {
+    bool ate = (head2.x == food.x && head2.y == food.y);
+    int newLen = ate ? min(len2 + 1, MAX_LEN) : len2;
+    for (int i = newLen - 1; i > 0; i--) snake2[i] = snake2[i-1];
+    snake2[0] = head2;
+    if (ate) { len2 = newLen; score2++; spawnFood(); accelerate(); }
+  }
+
+  if (!alive1 || !alive2) gameOver = true;
+}
+
+// =====================================================
+void accelerate() {
+  int total = score1 + score2;
+  if (total % 5 == 0 && gameSpeed > 80) gameSpeed -= 10;
+}
+
+// =====================================================
+void drawGame() {
+  display.clearDisplay();
+
+  // Borda do campo
+  display.drawRect(0, 0, COLS * CELL, ROWS * CELL, WHITE);
+
+  // Comida — círculo pequeno
+  int fx = food.x * CELL + CELL / 2;
+  int fy = food.y * CELL + CELL / 2;
+  display.fillCircle(fx, fy, 1, WHITE);
+
+  // Cobra 1 — cabeça cheia, corpo vazado (borda)
+  for (int i = 0; i < len1; i++) {
+    int px = snake1[i].x * CELL;
+    int py = snake1[i].y * CELL;
+    if (i == 0) {
+      display.fillRect(px, py, CELL, CELL, WHITE);
+    } else {
+      display.drawRect(px + 1, py + 1, CELL - 2, CELL - 2, WHITE);
+    }
+  }
+
+  // Cobra 2 — cabeça cheia com X, corpo preenchido menor
+  for (int i = 0; i < len2; i++) {
+    int px = snake2[i].x * CELL;
+    int py = snake2[i].y * CELL;
+    if (i == 0) {
+      display.fillRect(px, py, CELL, CELL, WHITE);
+      // X branco invertido para distinguir a cabeça
+      display.drawLine(px,        py,        px+CELL-1, py+CELL-1, BLACK);
+      display.drawLine(px+CELL-1, py,        px,        py+CELL-1, BLACK);
+    } else {
+      display.fillRect(px + 1, py + 1, CELL - 2, CELL - 2, WHITE);
+    }
+  }
+
+  // Linha separadora do placar
+  display.drawFastHLine(0, FIELD_H, SCREEN_WIDTH, WHITE);
+
+  // Placar
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+
+  // J1 à esquerda
+  display.setCursor(2, SCORE_Y);
+  display.print("J1:");
+  display.print(score1);
+
+  // Velocidade no centro
+  display.setCursor(46, SCORE_Y);
+  display.print("Spd:");
+  display.print(200 - gameSpeed + 80);  // valor crescente p/ o jogador
+
+  // J2 à direita
+  display.setCursor(90, SCORE_Y);
+  display.print("J2:");
+  display.print(score2);
+
+  display.display();
+}
+
+// =====================================================
+void drawGameOver() {
+  display.clearDisplay();
+  display.setTextColor(WHITE);
+
+  // Título grande
+  display.setTextSize(2);
+  display.setCursor(10, 2);
+  display.print("FIM DE JOGO");
+
+  // Resultado
+  display.setTextSize(1);
+  display.setCursor(20, 24);
+  if (!alive1 && !alive2) {
+    display.print("*** EMPATE! ***");
+  } else if (!alive1) {
+    display.print(">> J2 VENCEU! <<");
+  } else {
+    display.print(">> J1 VENCEU! <<");
+  }
+
+  // Pontuação
+  display.setCursor(14, 38);
+  display.print("J1: ");
+  display.print(score1);
+  display.print(" pts    J2: ");
+  display.print(score2);
+  display.print(" pts");
+
+  // Instrução
+  display.setCursor(16, 54);
+  display.print("Pressione um botao");
+
+  display.display();
+}
+
+// =====================================================
+void waitAnyButton() {
+  while (digitalRead(P1_UP)    == LOW &&
+         digitalRead(P1_DOWN)  == LOW &&
+         digitalRead(P1_LEFT)  == LOW &&
+         digitalRead(P1_RIGHT) == LOW &&
+         digitalRead(P2_UP)    == LOW &&
+         digitalRead(P2_DOWN)  == LOW &&
+         digitalRead(P2_LEFT)  == LOW &&
+         digitalRead(P2_RIGHT) == LOW) { delay(10); }
+}
+
 
 
 
