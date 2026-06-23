@@ -56,8 +56,9 @@ Um jogo completamente funcional no arduino físico, com resposta rápida aos bot
 1. Descrição da ideia: Jogo da cobrinha de dois jogadores. Cada um controla sua cobrinha para comer o máximo de comida possível e marcar pontos.
 2. Listar materiais para montar o hardware: 8 botões, protoboard, arduino UNO, display OLED, jumpers, resistores.
 3. Montar uma simulação do circuito no Wokwi.
-4. Fazer o código e resolver problemas.
+4. Fazer o código e resolver problemas nele.
 5. Montar o circuito físico.
+6. Teste final.
 
 ### Quinta etapa: reconhecimento de padrões
 **1 - Existem ações repetidas?**  
@@ -193,10 +194,10 @@ Limpa o display e exibe três informações:
 
 ### Conclusão final da dupla:
 
-1. O que a dupla aprendeu durante o desenvolvimento?  
-2. Como o pensamento computacional ajudou na organização da ideia?  
-3. A solução criada funcionou como esperado?  
-4. O que poderia ser melhorado em uma próxima versão?  
+1. O que a dupla aprendeu durante o desenvolvimento? Como mexer num novo simulador de arduino online (Wokwi) e aprendemos a utilizar telas no arduino.
+2. Como o pensamento computacional ajudou na organização da ideia? Montamos o passo a passo da ideia, o que deixou mais fácil a divisão de tarefas entre os componentes do grupo e facilitou a construção da lógica por trás do código do arduino. 
+3. A solução criada funcionou como esperado? Funcionou bem.
+4. O que poderia ser melhorado em uma próxima versão? Melhorar o design, se possível, melhorar a organização do fios.
 
 
 
