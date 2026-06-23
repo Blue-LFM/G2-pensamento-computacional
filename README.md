@@ -53,11 +53,11 @@ Um jogo completamente funcional no arduino físico, com resposta rápida aos bot
 
 ### Quarta etapa: decomposição
 **Partes da solução:**
-1 - Descrição da ideia: Jogo da cobrinha de dois jogadores. Cada um controla sua cobrinha para comer o máximo de comida possível e marcar pontos.
-2 - Listar materiais para montar o hardware: 8 botões, protoboard, arduino UNO, display OLED, jumpers, resistores.
-3 - Montar uma simulação do circuito no Wokwi.
-4 - Fazer o código e resolver problemas.
-5 - Montar o circuito físico.
+1. Descrição da ideia: Jogo da cobrinha de dois jogadores. Cada um controla sua cobrinha para comer o máximo de comida possível e marcar pontos.
+2. Listar materiais para montar o hardware: 8 botões, protoboard, arduino UNO, display OLED, jumpers, resistores.
+3. Montar uma simulação do circuito no Wokwi.
+4. Fazer o código e resolver problemas.
+5. Montar o circuito físico.
 
 ### Quinta etapa: reconhecimento de padrões
 **1 - Existem ações repetidas?**  
@@ -185,11 +185,11 @@ Limpa o display e exibe três informações:
 **O que a dupla conseguiu iniciar hoje:**  
 
 ### Nona etapa: testes e melhorias
-1. A simulação funcionou como esperado?
-2. O que deu certo?
-3. O que precisa ser corrigido?
-4. O que pode ser melhorado?
-5. A ideia inicial precisou ser modificada?
+1. A simulação funcionou como esperado? Funcionou, depois de várias correções.
+2. O que deu certo? O game funciona bem.
+3. O que precisa ser corrigido? Alguns possíveis lags/travamentos
+4. O que pode ser melhorado? A princípio, nada.
+5. A ideia inicial precisou ser modificada? Nossa ideia lá no início era fazer apenas singleplayer, mas decidimos ser um pouco diferentes e fazer multiplayer.
 
 ### Conclusão final da dupla:
 
