@@ -1,8 +1,10 @@
 Trabalho Avaliativo – G2
 Disciplina: Pensamento Computacional
-Integrante:                      Responsabilidade no trabalho:
-Luis Eduardo do Moraes Ferrão    Escrita, organização da ideia, testes, apresentação
-Letícia Fernanda Martinazzo      Criação da lógica, construção da simulação, testes, apresentação
+
+|Integrante:                   |  Responsabilidade no trabalho:                                    |
+|------------------------------|-------------------------------------------------------------------|
+|Luis Eduardo do Moraes Ferrão |  Escrita, organização da ideia, testes, apresentação              |
+|Letícia Fernanda Martinazzo   |  Criação da lógica, construção da simulação, testes, apresentação |
 
 Primeira etapa: Criação da ideia
 1 - Qual será a ideia principal do trabalho? 
