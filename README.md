@@ -1,5 +1,5 @@
-Trabalho Avaliativo – G2
-Disciplina: Pensamento Computacional
+# Trabalho Avaliativo – G2
+## Disciplina: Pensamento Computacional
 
 |Integrante:                   |  Responsabilidade no trabalho:                                    |
 |------------------------------|-------------------------------------------------------------------|
