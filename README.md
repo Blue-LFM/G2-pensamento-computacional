@@ -551,7 +551,8 @@ void waitAnyButton() {
          digitalRead(P2_RIGHT) == LOW) { delay(10); }
 }
 
-
-
+```
+### Link no Wokwi:
+https://wokwi.com/projects/467036581798666241
 
 
