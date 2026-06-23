@@ -55,10 +55,10 @@ Um jogo completamente funcional no arduino físico, com resposta rápida aos bot
 **Partes da solução:**
 1 - Descrição da ideia: Jogo da cobrinha de dois jogadores. Cada um controla sua cobrinha para comer o máximo de comida possível e marcar pontos.
 2 - Listar materiais para montar o hardware: 8 botões, protoboard, arduino UNO, display OLED, jumpers, resistores.
-3 - 
-4 - 
-5 - 
-6 - 
+3 - Montar uma simulação do circuito no Wokwi.
+4 - Fazer o código e resolver problemas.
+5 - Montar o circuito físico.
+
 ### Quinta etapa: reconhecimento de padrões
 **1 - Existem ações repetidas?**  
 Sim, várias. As principais:
